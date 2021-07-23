@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo List</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.3.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>    
+
+  </head>
+
+  <body>
+    <section class="has-text-centered">
+      <h2 class="title">
+        TODO List
+      </h2>
+      <a href="#" onclick="createNew()">
+        Create new task
+      </a>
+      <input
+        id="task"
+        class="input is-primary is-large hidden"
+        type="text"
+        name="task"
+        placeholder="Add a task!"
+      />
+      <input
+        id="time"
+        class="input is-primary is-large hidden"
+        type="text"
+        name="time"
+        placeholder="Great! By when would you like to complete the task?"
+      />
+      <input
+        id="description"
+        class="input is-primary is-large hidden"
+        type="text"
+        name="description"
+        placeholder="Give a brief description of the task."
+      />
+    </section>
+    <ul id="mainList">
+    
+    </ul>
+
+    <script src="script.js" type="text/javascript" defer></script>
+  </body>
+</html>
