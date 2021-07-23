@@ -27,13 +27,13 @@ window.onload = function() {
   RDreference.on('value', (snapshot) => {
     var ul = document.querySelector("#mainList");
     ul.innerHTML = "";
+    tasks = [];
     const data = snapshot.val();
     var i = 0;
     for (item in data) {
         console.log(data[item]);
         tasks.push(data[item]);
-        tasks[i]["key"] = item; 
-        console.log("Calling displaylist  from onLoad with index " + i);
+        tasks[i]["key"] = item;
         displayList(i);
         ++i;
     }
@@ -41,10 +41,6 @@ window.onload = function() {
 };
 
 function displayList(index) {
-  console.log("Creting index: " + index);
-
-  console.log(tasks[index]);
-
   var content;
   if (!("completed" in tasks[index])) {
     // Construct card content
@@ -65,13 +61,14 @@ function removeItem(index) {
 }
 
 function markCompleted(index) {
-  console.log("Marking completed: " + index);
   var candidate = document.querySelector("#I" + index);
 
   // Construct card content
   const content = completedCard(index);
   candidate.innerHTML = content;
   tasks[index]["completed"] = true;
+
+  RDreference.child(tasks[index]["key"]).update(tasks[index]);
 }
 
 function completedCard(index) {
@@ -148,7 +145,4 @@ function addItem_impl(t, time, d) {
     tasks.push(newItem);
   
     RDreference.push(newItem); // store in RD
-
-    //console.log("Calling displaylist addItem_impl with index " + (tasks.length-1));
-    //displayList(tasks.length - 1);
 }
