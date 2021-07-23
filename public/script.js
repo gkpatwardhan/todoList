@@ -4,10 +4,11 @@ const timeInputField = document.querySelector("#time");
 const descriptionInputField = document.querySelector("#description");
 
 function createNew() {
-    taskInputField.classList.remove("hidden");
-    descriptionInputField.classList.remove("hidden");
-    timeInputField.classList.remove("hidden");
-    document.querySelector("#createItem").classList.remove("hidden");
+    var title = prompt("Enter title for task", "Homework");
+    var deadline = prompt("Enter deadline for task", "07-25-2021");
+    var description = prompt("Describe the task", "Do homework for class...");
+
+    addItem_impl(title, deadline, description);
 }
 
 // Reference to firebase
@@ -30,13 +31,6 @@ window.onload = function() {
     tasks = [];
     const data = snapshot.val();
     var i = 0;
-
-    /*
-    <div class="tile is-ancestor">
-      ${displayContent(i)}
-      ${displayContent(i + 1)}    
-      </div>`;
-    */
     
     for (item in data) {
         console.log(data[item]);
@@ -196,17 +190,6 @@ function incompleteCard(index) {
 </div> </div> `;
 }
 
-function addItem() {
-    addItem_impl(taskInputField.value, timeInputField.value, descriptionInputField.value);
-
-    //taskInputField.classList.add("hidden");
-    //descriptionInputField.classList.add("hidden");
-    //timeInputField.classList.add("hidden");
-    taskInputField.value = "";
-    descriptionInputField.value = "";
-    timeInputField.value = "";
-}
-
 function addItem_impl(t, time, d) {
     var newItem = {
         title: t,
@@ -216,4 +199,5 @@ function addItem_impl(t, time, d) {
     tasks.push(newItem);
   
     RDreference.push(newItem); // store in RD
+    document.location.reload();
 }
