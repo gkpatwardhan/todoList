@@ -30,11 +30,25 @@ window.onload = function() {
     tasks = [];
     const data = snapshot.val();
     var i = 0;
+
+    /*
+    <div class="tile is-ancestor">
+      ${displayContent(i)}
+      ${displayContent(i + 1)}    
+      </div>`;
+    */
+    
     for (item in data) {
         console.log(data[item]);
         tasks.push(data[item]);
         tasks[i]["key"] = item;
-        displayList(i);
+        if (!(i % 2) == 0) {
+            document.querySelector("#mainList").innerHTML += 
+            `<div class="tile is-ancestor">
+                ${displayList(i - 1)}
+                ${displayList(i)}    
+              </div>`;
+        }
         ++i;
     }
   });
@@ -42,14 +56,14 @@ window.onload = function() {
 
 function displayList(index) {
   var content;
-  if (!("completed" in tasks[index])) {
+  if (!("completed" in tasks[index]) || tasks[index]["completed"] == false) {
     // Construct card content
     content = incompleteCard(index);
   } else {
     // Construct card content
     content = completedCard(index);
   }
-  document.querySelector("#mainList").innerHTML += content;
+  return content;
 }
 
 function removeItem(index) {
@@ -64,65 +78,122 @@ function markCompleted(index) {
   var candidate = document.querySelector("#I" + index);
 
   // Construct card content
-  const content = completedCard(index);
+  const content = innerCompletedCard(index);
   candidate.innerHTML = content;
   tasks[index]["completed"] = true;
 
   RDreference.child(tasks[index]["key"]).update(tasks[index]);
 }
 
-function completedCard(index) {
-    return `
-  <div class="card has-background-success" id="${"I" + index}">
+function markIncomplete(index) {
+  var candidate = document.querySelector("#I" + index);
+
+  // Construct card content
+  const content = innerIncompletedCard(index);
+  candidate.innerHTML = content;
+  tasks[index]["completed"] = false;
+
+  RDreference.child(tasks[index]["key"]).update(tasks[index]);
+}
+
+function innerIncompletedCard(index) {
+    return `<div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      ${tasks[index]["title"]}
+    </p>
+  </header>
+  
+  <div class="card-content has-text-centered">
+    <div class="content">
+      <b>Description: </b>${tasks[index]["description"]}
+      <br>
+      <time datetime="2016-1-1">
+      <b>Deadline: </b>${tasks[index]["time"]}</time>
+    </div>
+  </div>
+  <footer class="card-footer">
+    <a href="#" class="card-footer-item" type="button" onclick="markCompleted(${index})">Mark Completed</a>
+    <a href="#" class="card-footer-item" type="button" onclick="removeItem(${index})">Delete</a>
+  </footer>
+</div>`;
+}
+
+function innerCompletedCard(index) {
+    return `<div class="card has-background-success">
   <header class="card-header">
     <p class="card-header-title">
       ${tasks[index]["title"]}
     </p>
     <p class="card-header-subtitle">
-      Completed
+      &#10004;
     </p>
   </header>
   
-  <div class="card-content">
+  <div class="card-content has-text-centered">
     <div class="content">
-      ${tasks[index]["description"]}
+      <b>Description:</b> ${tasks[index]["description"]}
       <br>
       <time datetime="2016-1-1">
-      ${tasks[index]["time"]}</time>
+      <b>Deadline:</b> ${tasks[index]["time"]}</time>
     </div>
   </div>
   <footer class="card-footer">
-    <a href="#" class="card-footer-item" type="button" onclick="markCompleted(${index})">Mark Completed</a>
+    <a href="#" class="card-footer-item" type="button" onclick="markIncomplete(${index})">Mark Incomplete</a>
     <a href="#" class="card-footer-item" type="button" onclick="removeItem(${index})">Delete</a>
   </footer>
-</div>  `;
+</div> `;
 }
 
-function incompleteCard(index) {
-    return `
-  <div class="card" id="${"I" + index}">
+function completedCard(index) {
+    return `<div class="column is-half m-1"  id="${"I" + index}">
+  <div class="card has-background-success">
   <header class="card-header">
     <p class="card-header-title">
       ${tasks[index]["title"]}
     </p>
-    <span class="icon">
-        <i class="fas fa-check-square"></i>
-      </span>
+    <p class="card-header-subtitle">
+      &#10004;
+    </p>
   </header>
   
-  <div class="card-content">
+  <div class="card-content has-text-centered">
     <div class="content">
-      ${tasks[index]["description"]}
+      <b>Description:</b> ${tasks[index]["description"]}
       <br>
       <time datetime="2016-1-1">
-      ${tasks[index]["time"]}</time>
+      <b>Deadline:</b> ${tasks[index]["time"]}</time>
+    </div>
+  </div>
+  <footer class="card-footer">
+    <a href="#" class="card-footer-item" type="button" onclick="markIncomplete(${index})">Mark Incomplete</a>
+    <a href="#" class="card-footer-item" type="button" onclick="removeItem(${index})">Delete</a>
+  </footer>
+</div>  </div>`;
+}
+
+function incompleteCard(index) {
+    return `<div class="column is-half  m-1"  id="${"I" + index}">
+  <div class="card">
+  <header class="card-header">
+    <p class="card-header-title">
+      ${tasks[index]["title"]}
+    </p>
+  </header>
+  
+  <div class="card-content has-text-centered">
+    <div class="content">
+      <b>Description: </b>${tasks[index]["description"]}
+      <br>
+      <time datetime="2016-1-1">
+      <b>Deadline: </b>${tasks[index]["time"]}</time>
     </div>
   </div>
   <footer class="card-footer">
     <a href="#" class="card-footer-item" type="button" onclick="markCompleted(${index})">Mark Completed</a>
     <a href="#" class="card-footer-item" type="button" onclick="removeItem(${index})">Delete</a>
   </footer>
-</div>  `;
+</div> </div> `;
 }
 
 function addItem() {
